@@ -1,8 +1,91 @@
 {% extends 'base.html' %}
 
-{% block title %} Start Page {% endblock %}
+{% block title %} Траты {% endblock %}
 
 
 {% block body %} 
-    <h1>Start Page for users</h1>
+
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h1 class="h2">График расходов</h1>
+      
+    </div>
+    <canvas id="myChart"></canvas>
+    <h2>Покупки</h2>
+    <div class="table-responsive">
+      <table class="table table-striped table-sm">
+        <thead>
+          <tr>
+            <th>сумма</th>
+            <th>продукт</th>
+            <th>дата</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for el in article %}
+                <tr>
+                    <td id="price_td">{{ el.price }} руб.</td>
+                    <td id="product_td">{{el.product}}</td>
+                    <td id="date_td">{{el.date.date()}}</td>
+                    <td><a href="/spending/{{ el.id }}/del" class="btn btn-danger">Удалить</a></td>
+                    <td><a href="/refactor/{{ el.id }}/update" class="btn btn-warning">Редактировать</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.1/dist/chart.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    // Дата из БД
+    var date_db = ('{% for el in article %} {{el.date.date()}} {% endfor %}').replace(/\s+/g, ' ').trim();
+    let date = date_db.split(' ');
+    let setDate = new Set(date);
+    let arrDate = Array.from(setDate)
+    arrDate.length = 7;
+    // Цена из БД
+    var price_db = ('{% for el in article %} {{el.price}} {% endfor %}').replace(/\s+/g, ' ').trim();
+    let price = price_db.split(' ').map(Number);
+    let sortPrice = [];
+    let sum = Number();
+    // делаем зависимость общей траты за определенный день
+    for(let i = 0; i < date.length; i++){
+            if (date[i] == date[i+1]){
+                sum += price[i]
+            }else if (sum != 0 && date[i] != date[i+1]){
+              sum += price[i]
+              sortPrice.push(sum);
+                sum = 0;
+            }else{
+              sortPrice.push(price[i]);
+            }
+        }
+    console.log(price);   
+    // строим график по полученным данным 
+    let ctx = document.querySelector('#myChart').getContext('2d');
+    let myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: arrDate,
+            datasets: [{
+                label: 'Потрачено',
+                data: sortPrice,
+                backgroundColor: [
+                    '#6fcdcd',
+                    '#ff829d',
+                    '#ffd778'
+                ],
+                borderColor: [
+                    'black',
+
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+
+        }
+    })
+  </script>
 {% endblock %}

@@ -8,10 +8,32 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Внести расходы</h1>
     </div>
-    <form method="post">
-        <input type="text" name="product" id="product" class="form-control" placeholder="Продукт"><br>
-        <input type="number" name="price" id="price" class="form-control" placeholder="Цена"><br>
+    <form method="post" id="post">
+        <input type="text" name="product" id="product" class="input__product" placeholder="Продукт"><br>
+        <input type="number" name="price" id="price" class="input__price" placeholder="Цена"><br>
         <input type="submit" class="btn btn-success" value="сохранить">
-        
     </form>
+    <div class="spending_list">
+        {% if article | length > 0 %}
+        <div class="info">
+          <li>Продукты</li>
+          <li>Сумма</li>
+          <li>Дата</li>
+        </div>
+          {% for el in article %}
+          <div class="items">
+              <div class="product_list">{{el.product}}</div>
+              <div class="price">{{el.price}} руб.</div>
+              <div class="day">{{el.date.date()}}</div>
+              <div class="refactor_btn">
+                <a href="/spending/{{ el.id }}/del" class="btn btn-danger">Удалить</a>
+                <a href="/refactor/{{ el.id }}/update" class="btn btn-warning">Редактировать</a>
+              </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <h1 id="null_spending">Тут пока что пусто !!!</h1>
+          <a href="/input" class="btn btn-warning">Добаить трату</a>
+        {% endif %}
+    </div>
 {% endblock %}
