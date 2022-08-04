@@ -1,7 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Signika+Negative:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Signika+Negative:wght@700&display=swap');
 /* стили для spending */
-
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 .spending {
     
 }
@@ -25,7 +29,6 @@
 }
 .items {
     min-height: 5em;
-    border: 4px solid rgb(254, 191, 0);
     border-radius: 5px;
     padding: 30px 0px;
     background-color: #f8f9fa;
@@ -67,3 +70,44 @@
     width: 30%;
     margin-right: 20px;
 }
+
+
+/* кнопка дял смены графика */
+.switch-btn {
+    display: inline-block;
+    width: 62px; /* ширина переключателя */
+    height: 24px; /* высота переключателя */
+    border-radius: 12px; /* радиус скругления */
+    background: #bfbfbf; /* цвет фона */
+    z-index: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition-duration: 300ms; /* анимация */
+  }
+  .switch-btn::after {
+    content: "";
+    height: 36px; /* высота кнопки */
+    width: 36px; /* ширина кнопки */
+    border-radius: 18px; /* радиус кнопки */
+    background: #fff; /* цвет кнопки */
+    top: -6px; /* положение кнопки по вертикали относительно основы */
+    left: -6px; /* положение кнопки по горизонтали относительно основы */
+    transition-duration: 300ms; /* анимация */
+    box-shadow: 0 0 10px 0 #999999; /* тень */
+    position: absolute;
+    z-index: 1;
+  }
+  .switch-on {
+    background: #fff;
+    box-shadow: inset 0 0 10px 0 #999999; /* тень */
+  }
+  .switch-on::after {
+    left: 30px;
+    background: #118c4e;
+  }
+
+
+

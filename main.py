@@ -1,11 +1,53 @@
+import email
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, session, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import date, datetime
 import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///spend.db'
 db = SQLAlchemy(app)
+
+
+class Users(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(50), unique=True)
+    psw = db.Column(db.String(500), nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<users {self.id}>"
+
+
+class Profiles(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    def __repr__(self):
+        return f"<profiles {self.id}>"
+
+
+# функция регистрации
+@app.route('/registration', methods=["POST", "GET"])
+def registration():
+    if request.method == "POST":
+        # здесь должна быть проверка корректности введенных данных
+        try:
+            hash = generate_password_hash(request.form['psw'])
+            u = Users(email=request.form['email'], psw=hash)
+            db.session.add(u)
+
+            p = Profiles(name=request.form['name'], user_id=u.id)
+            db.session.add(p)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            print("Ошибка добавления в БД")
+        return redirect('sign_in')
+    return render_template("registration.html")
 
 
 class Article(db.Model):
@@ -19,6 +61,11 @@ class Article(db.Model):
 
     def __repr__(self) -> str:
         return '<Article %r>' % self.id
+
+# функция входа
+    @app.route('/sign_in')
+    def sign_in():
+        return render_template("sign_in.html")
 
 
 # функция основной страницы

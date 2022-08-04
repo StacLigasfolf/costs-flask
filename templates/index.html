@@ -8,7 +8,7 @@
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
       <h1 class="h2">График расходов</h1>
-      
+      <div class="switch-btn" onclick="updateType()"></div>
     </div>
     <canvas id="myChart"></canvas>
     <h2>Покупки</h2>
@@ -38,6 +38,16 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.1/dist/chart.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script>
+    // кнопка пока не используется
+    $('.switch-btn').click(function(){
+      $(this).toggleClass('switch-on');
+      if ($(this).hasClass('switch-on')) {
+        $(this).trigger('on.switch');
+      } else {
+        $(this).trigger('off.switch');
+      }
+    });
+
     // Дата из БД
     var date_db = ('{% for el in article %} {{el.date.date()}} {% endfor %}').replace(/\s+/g, ' ').trim();
     let date = date_db.split(' ');
@@ -60,32 +70,30 @@
             }else{
               sortPrice.push(price[i]);
             }
-        }
-    console.log(price);   
+        }   
     // строим график по полученным данным 
     let ctx = document.querySelector('#myChart').getContext('2d');
     let myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: arrDate,
-            datasets: [{
-                label: 'Потрачено',
-                data: sortPrice,
-                backgroundColor: [
-                    '#6fcdcd',
-                    '#ff829d',
-                    '#ffd778'
-                ],
-                borderColor: [
-                    'black',
-
-                ],
-                borderWidth: 2
-            }]
-        },
-        options: {
-
-        }
-    })
+          type: 'bar',
+          data: {
+              labels: arrDate,
+              datasets: [{
+                  label: 'Потрачено',
+                  data: sortPrice,
+                  backgroundColor: [
+                      '#6fcdcd',
+                      '#ff829d',
+                      '#ffd778'
+                  ],
+                  borderColor: [
+                      'black',
+                  ],
+                  borderWidth: 2
+              }]
+              },
+          options: {
+          }
+          
+      })
   </script>
 {% endblock %}
