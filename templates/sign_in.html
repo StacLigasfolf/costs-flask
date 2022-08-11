@@ -9,7 +9,14 @@
     <title>sign in</title>
 </head>
 <body>
-    <form action="/sign_in" method="get" class="form">
+    <form action="" method="post" class="form">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                    {% for message in messages %}
+                    <h3>{{ message }}</h3>
+                    {% endfor %}
+            {% endif %}
+        {% endwith %}
         <div class="circle"></div>
             <div class="register-form-container">
                 <h1 class="form-title">Войти</h1>
