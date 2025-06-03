@@ -9,6 +9,8 @@ app = Flask(__name__)
 app.secret_key = 'L1gas'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///spend.db'
 db = SQLAlchemy(app)
+
+
 manager = LoginManager(app)
 
 '''
@@ -41,6 +43,7 @@ class Profiles(db.Model):
         return f"<profiles {self.id}>"
 
 
+
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, default=datetime.utcnow)
@@ -50,7 +53,9 @@ class Article(db.Model):
     def __repr__(self) -> str:
         return '<article %r>' % self.id
 
-
+with app.app_context():
+    db.create_all()
+    print("Все таблицы созданы!")  # Для проверки
 '''
     Тут начинаются функции воспроизведения страниц и их взаимодействиями с SQLALchemy
     return:
